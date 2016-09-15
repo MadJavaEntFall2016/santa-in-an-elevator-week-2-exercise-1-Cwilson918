@@ -1,5 +1,11 @@
 package edu.madisoncollege.entjava;
 
+import org.apache.log4j.*;
+
+
+
+import java.io.*;
+import java.util.*;
 
 /**
  * Created by paulawaite on 9/7/16.
@@ -37,5 +43,58 @@ package edu.madisoncollege.entjava;
 
 public class SantaInAnElevator {
 
+    private final Logger logger = Logger.getLogger(this.getClass());
+
+    public List<String> getFloorDirections() {
+
+        List<String> floorDirections = new ArrayList<String>();
+
+
+        try {
+
+            ClassLoader loader = getClass().getClassLoader();
+            File inputFile = new File(loader.getResource("SantaUpDown.txt").getFile());
+            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
+            while (reader.ready()) {
+                floorDirections = Arrays.asList(reader.readLine().split(""));
+            }
+
+        } catch (FileNotFoundException fnfe) {
+            logger.info("File not found exception.");
+            fnfe.printStackTrace();
+        } catch (IOException ioe) {
+            logger.info("IO exception.");
+            ioe.printStackTrace();
+        } catch (Exception e) {
+            logger.info("General Error.");
+            e.printStackTrace();
+        }
+
+        return floorDirections;
+    }
+
+    public int getFloor(List<String> floorDirections) {
+
+        int floorNumber = 0;
+
+        for (String floorDirection : floorDirections) {
+            if (floorDirection.equals("(")) {
+                floorNumber++;
+            } else if (floorDirection.equals(")")) {
+                floorNumber--;
+            }
+        }
+
+        return floorNumber;
+    }
+
+    public int findSantasFloorNumber() {
+
+        int santasFloorNumber = getFloor(getFloorDirections());
+        logger.info("Santas floor is: " + getFloor(getFloorDirections()));
+
+        return santasFloorNumber;
+    }
 
 }
